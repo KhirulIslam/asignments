@@ -1,0 +1,33 @@
+version: '3.6'
+services:
+  app:
+    build: .
+    restart: always
+    depends_on:
+      - mailserver
+    environment:
+      ELASTICSEARCH_HOST_IP: elasticsearch
+      INDEX_NAME: winter_products
+      SMTP_PORT: 1025
+      SMTP_SERVER: mailserver
+      SENDER_EMAIL: info@localhost
+      SENDER_PASSWORD: 123456
+      RECIVER_EMAIL: khirul
+  elasticsearch:
+    image: "elasticsearch:7.5.1"
+    restart: always
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+  mailserver:
+    image: eaudeweb/mailtrap
+    restart: always
+    ports:
+      - "83:80"
+      # - "2525:2525"
+      - 1025:587
+      # - 1025:1025
+    environment:
+      MT_USER: khirul
+      MT_PASSWD: 123456

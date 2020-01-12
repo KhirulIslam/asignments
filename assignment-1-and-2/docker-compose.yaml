@@ -1,0 +1,35 @@
+version: '3.6'
+services:
+    service:
+        image: sample-express-app
+        build: .
+        restart: always
+        ports:
+          - 3000:3000
+        volumes:
+          - ./src:/usr/src/app
+        #   - ./src/node_modules:/usr/app/node_modules
+        depends_on:
+          - db
+        environment:
+          MYSQL_HOST_IP: db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          PORT: 3306
+    db:
+        container_name: mysql-container
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        # cap_add:
+        #   - SYS_NICE
+        restart: always
+        ports:
+          - 3306:3306
+        volumes:
+          - ./db-init/:/docker-entrypoint-initdb.d
+        environment:
+          MYSQL_ROOT_PASSWORD: example
+          MYSQL_DATABASE: test
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
